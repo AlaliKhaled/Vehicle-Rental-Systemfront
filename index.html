@@ -3,99 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام إدارة الأسطول | لوحة التحكم</title>
+    <title>MKZ Rental | نظام الإدارة المتكامل</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; }
+        body { font-family: 'Cairo', sans-serif; background-color: #f1f5f9; }
+        .stat-card { transition: transform 0.2s; }
+        .stat-card:hover { transform: translateY(-5px); }
     </style>
 </head>
 <body>
-    <nav class="bg-white border-b border-slate-200 py-4 px-8 flex justify-between items-center sticky top-0 z-50 shadow-sm">
-        <div class="text-xl font-bold text-indigo-600 uppercase tracking-wider">VEHICLE-RENTAL-SYSTEM</div>
-        <div id="connection-status">
-            <span class="text-xs bg-amber-100 text-amber-700 px-2 py-1 rounded font-bold">جاري الاتصال...</span>
+    <nav class="bg-indigo-700 text-white py-4 px-8 flex justify-between items-center sticky top-0 z-50 shadow-lg">
+        <div class="flex items-center gap-3">
+            <div class="bg-white text-indigo-700 p-2 rounded-lg font-bold">MKZ</div>
+            <span class="text-xl font-bold tracking-tight">إدارة أسطول المركبات</span>
+        </div>
+        <div id="connection-status" class="flex items-center gap-2">
+            <span class="animate-pulse w-2 h-2 bg-amber-400 rounded-full"></span>
+            <span class="text-xs font-medium text-amber-100">جاري تحديث البيانات...</span>
         </div>
     </nav>
 
-    <main class="p-8 max-w-7xl mx-auto">
-        <header class="mb-10 text-right border-r-4 border-indigo-500 pr-4">
-            <h1 class="text-2xl font-bold text-slate-800 mb-2">نظام إدارة الأسطول (SaaS)</h1>
-            <p class="text-slate-500 text-sm">أهلاً خالد. يتم الآن جلب البيانات من سيرفر Render الحقيقي.</p>
-        </header>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                <p class="text-slate-400 text-xs font-bold uppercase mb-2">إجمالي المركبات</p>
-                <h2 id="total-vehicles" class="text-3xl font-bold text-slate-900">--</h2>
+    <main class="p-6 max-w-7xl mx-auto space-y-8">
+        
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="stat-card bg-white p-6 rounded-2xl shadow-sm border-b-4 border-indigo-500">
+                <p class="text-slate-500 text-xs font-bold uppercase">إجمالي الأسطول</p>
+                <h2 id="count-vehicles" class="text-3xl font-black text-slate-800">--</h2>
             </div>
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                <p class="text-slate-400 text-xs font-bold uppercase mb-2">الإيجارات النشطة</p>
-                <h2 class="text-3xl font-bold text-indigo-600">0</h2>
+            <div class="stat-card bg-white p-6 rounded-2xl shadow-sm border-b-4 border-emerald-500">
+                <p class="text-slate-500 text-xs font-bold uppercase">الحجوزات الحالية</p>
+                <h2 id="count-bookings" class="text-3xl font-black text-emerald-600">--</h2>
             </div>
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                <p class="text-slate-400 text-xs font-bold uppercase mb-2">تحديث النظام</p>
-                <h2 id="last-update" class="text-sm font-bold text-slate-500 italic">--:--</h2>
+            <div class="stat-card bg-white p-6 rounded-2xl shadow-sm border-b-4 border-amber-500">
+                <p class="text-slate-500 text-xs font-bold uppercase">إجمالي الإيرادات</p>
+                <h2 id="total-revenue" class="text-3xl font-black text-slate-800">$0</h2>
+            </div>
+            <div class="stat-card bg-white p-6 rounded-2xl shadow-sm border-b-4 border-slate-400">
+                <p class="text-slate-500 text-xs font-bold uppercase">آخر تحديث</p>
+                <h2 id="last-update" class="text-sm font-bold text-slate-500 mt-2 italic">--:--</h2>
             </div>
         </div>
 
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-8">
-            <h3 class="text-lg font-bold mb-6 flex items-center gap-2">
-                <span class="w-3 h-3 bg-indigo-500 rounded-full"></span>
-                قائمة المركبات النشطة
-            </h3>
-            <div id="vehicles-list" class="grid grid-cols-1 gap-4">
-                جاري سحب البيانات...
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            <div class="bg-white rounded-2xl shadow-md overflow-hidden">
+                <div class="bg-slate-50 px-6 py-4 border-b flex justify-between items-center">
+                    <h3 class="font-bold text-slate-700">المركبات المتاحة</h3>
+                    <span class="bg-indigo-100 text-indigo-700 text-[10px] px-2 py-1 rounded-full font-bold">API: Vehicles</span>
+                </div>
+                <div id="vehicles-list" class="p-4 space-y-3 max-h-[400px] overflow-y-auto">
+                    <div class="animate-pulse space-y-2"><div class="h-10 bg-slate-100 rounded"></div></div>
+                </div>
             </div>
+
+            <div class="bg-white rounded-2xl shadow-md overflow-hidden border-t-4 border-emerald-500">
+                <div class="bg-emerald-50 px-6 py-4 border-b flex justify-between items-center">
+                    <h3 class="font-bold text-emerald-800">سجل الحجوزات الأخيرة</h3>
+                    <span class="bg-emerald-100 text-emerald-700 text-[10px] px-2 py-1 rounded-full font-bold">API: Bookings</span>
+                </div>
+                <div id="bookings-list" class="p-4 space-y-3 max-h-[400px] overflow-y-auto">
+                    <p class="text-slate-400 text-center text-sm italic py-10">جاري فحص الحجوزات من Django...</p>
+                </div>
+            </div>
+
         </div>
     </main>
 
     <script>
-        // الرابط الصحيح لسيرفر Render الخاص بك
-        const API_URL = "https://vehicle-rental-system-pz4g.onrender.com/api/vehicles/";
+        const BASE_URL = "https://vehicle-rental-system-pz4g.onrender.com/api";
 
-        async function updateDashboard() {
+        async function refreshData() {
             try {
-                const response = await fetch(API_URL);
-                if (!response.ok) throw new Error('خطأ في الاتصال');
-                
-                const data = await response.json();
-                
-                // التعامل مع تنسيق Pagination (results) أو المصفوفة المباشرة
-                const vehicles = data.results || data; 
+                // 1. جلب بيانات المركبات
+                const vRes = await fetch(`${BASE_URL}/vehicles/`);
+                const vData = await vRes.json();
+                const vehicles = vData.results || vData;
 
-                // 1. تحديث إجمالي المركبات
-                document.getElementById('total-vehicles').innerText = vehicles.length;
-                
-                // 2. تحديث حالة الاتصال
-                document.getElementById('connection-status').innerHTML = `
-                    <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded font-bold">متصل بالـ API حياً</span>
-                `;
+                // 2. جلب بيانات الحجوزات (تأكد من تفعيل الرابط في Django)
+                const bRes = await fetch(`${BASE_URL}/bookings/`);
+                const bData = await bRes.json();
+                const bookings = bData.results || bData;
 
-                // 3. عرض قائمة المركبات (Toyota Camry ستظهر هنا)
-                const listContainer = document.getElementById('vehicles-list');
-                if (vehicles.length > 0) {
-                    listContainer.innerHTML = vehicles.map(v => `
-                        <div class="p-4 bg-slate-50 rounded-xl flex justify-between items-center border border-slate-100">
-                            <span class="font-bold text-slate-700">${v.make} ${v.model}</span>
-                            <span class="text-indigo-600 font-bold">$${v.daily_price}</span>
+                // تحديث العدادات
+                document.getElementById('count-vehicles').innerText = vehicles.length;
+                document.getElementById('count-bookings').innerText = bookings.length;
+
+                // عرض المركبات
+                const vContainer = document.getElementById('vehicles-list');
+                vContainer.innerHTML = vehicles.map(v => `
+                    <div class="flex justify-between items-center p-4 bg-slate-50 rounded-xl border border-slate-100">
+                        <div>
+                            <p class="font-bold text-slate-800">${v.brand || v.make} ${v.model}</p>
+                            <p class="text-[10px] text-slate-400 uppercase tracking-widest">${v.plate_number || 'No Plate'}</p>
                         </div>
-                    `).join('');
+                        <span class="text-indigo-600 font-bold">$${v.daily_rate || v.daily_price}</span>
+                    </div>
+                `).join('');
+
+                // عرض الحجوزات
+                const bContainer = document.getElementById('bookings-list');
+                if (bookings.length > 0) {
+                    let totalRev = 0;
+                    bContainer.innerHTML = bookings.map(b => {
+                        totalRev += parseFloat(b.total_price || 0);
+                        return `
+                            <div class="flex justify-between items-center p-4 bg-emerald-50 rounded-xl border border-emerald-100">
+                                <div>
+                                    <p class="font-bold text-emerald-900">${b.customer_name || 'عميل'}</p>
+                                    <p class="text-[10px] text-emerald-600 font-bold">حجز لسيارة: ${b.vehicle_name || 'مركبة'}</p>
+                                </div>
+                                <div class="text-left">
+                                    <p class="text-emerald-700 font-black">$${b.total_price}</p>
+                                    <span class="text-[8px] bg-white px-2 py-0.5 rounded shadow-sm uppercase">${b.status || 'Pending'}</span>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                    document.getElementById('total-revenue').innerText = `$${totalRev}`;
                 } else {
-                    listContainer.innerHTML = '<p>لا توجد مركبات حالياً.</p>';
+                    bContainer.innerHTML = '<p class="text-center text-slate-400 py-10">لا توجد حجوزات مسجلة.</p>';
                 }
 
+                // تحديث الحالة والوقت
+                document.getElementById('connection-status').innerHTML = `
+                    <span class="w-2 h-2 bg-green-400 rounded-full"></span>
+                    <span class="text-xs font-bold text-green-100">متصل بالـ API حياً</span>
+                `;
                 document.getElementById('last-update').innerText = new Date().toLocaleTimeString('ar-SA');
 
-            } catch (error) {
-                console.error("خطأ:", error);
-                document.getElementById('connection-status').innerHTML = `
-                    <span class="text-xs bg-red-100 text-red-700 px-2 py-1 rounded font-bold">فشل الاتصال</span>
-                `;
+            } catch (err) {
+                console.error("Fetch Error:", err);
+                document.getElementById('connection-status').innerHTML = '<span class="text-xs text-red-300 font-bold">⚠️ خطأ في مزامنة البيانات</span>';
             }
         }
 
-        updateDashboard();
+        // تحديث تلقائي كل 30 ثانية
+        refreshData();
+        setInterval(refreshData, 30000);
     </script>
 </body>
 </html>
