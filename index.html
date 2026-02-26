@@ -21,11 +21,11 @@
     <main class="p-8 max-w-7xl mx-auto">
         <header class="mb-10 text-right border-r-4 border-indigo-500 pr-4">
             <h1 class="text-2xl font-bold text-slate-800 mb-2">نظام إدارة الأسطول (SaaS)</h1>
-            <p class="text-slate-500 text-sm">يتم الآن جلب البيانات الحقيقية من نظام Django الخاص بك.</p>
+            <p class="text-slate-500 text-sm">أهلاً خالد. يتم الآن جلب البيانات من سيرفر Render الحقيقي.</p>
         </header>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:border-indigo-300 transition-colors">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
                 <p class="text-slate-400 text-xs font-bold uppercase mb-2">إجمالي المركبات</p>
                 <h2 id="total-vehicles" class="text-3xl font-bold text-slate-900">--</h2>
             </div>
@@ -42,63 +42,59 @@
         <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-8">
             <h3 class="text-lg font-bold mb-6 flex items-center gap-2">
                 <span class="w-3 h-3 bg-indigo-500 rounded-full"></span>
-                قائمة المركبات من الـ API
+                قائمة المركبات النشطة
             </h3>
-            <div id="vehicles-list" class="grid grid-cols-1 gap-4 text-sm text-slate-600">
-                <div class="animate-pulse flex space-x-4">
-                    <div class="flex-1 space-y-4 py-1">
-                        <div class="h-4 bg-slate-200 rounded"></div>
-                    </div>
-                </div>
+            <div id="vehicles-list" class="grid grid-cols-1 gap-4">
+                جاري سحب البيانات...
             </div>
         </div>
     </main>
 
     <script>
-        // الرابط النهائي للباك-ايند الذي يعمل حالياً
-        const API_URL = "https://vehicle-rental-system-orcin.vercel.app/api/vehicles/";
+        // الرابط الصحيح لسيرفر Render الخاص بك
+        const API_URL = "https://vehicle-rental-system-pz4g.onrender.com/api/vehicles/";
 
         async function updateDashboard() {
             try {
                 const response = await fetch(API_URL);
-                
-                if (!response.ok) throw new Error('فشل في جلب البيانات');
+                if (!response.ok) throw new Error('خطأ في الاتصال');
                 
                 const data = await response.json();
                 
+                // التعامل مع تنسيق Pagination (results) أو المصفوفة المباشرة
+                const vehicles = data.results || data; 
+
                 // 1. تحديث إجمالي المركبات
-                document.getElementById('total-vehicles').innerText = data.length;
+                document.getElementById('total-vehicles').innerText = vehicles.length;
                 
-                // 2. تحديث حالة الاتصال للأخضر
+                // 2. تحديث حالة الاتصال
                 document.getElementById('connection-status').innerHTML = `
                     <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded font-bold">متصل بالـ API حياً</span>
                 `;
 
-                // 3. عرض قائمة المركبات
+                // 3. عرض قائمة المركبات (Toyota Camry ستظهر هنا)
                 const listContainer = document.getElementById('vehicles-list');
-                if (data.length > 0) {
-                    listContainer.innerHTML = data.map(vehicle => `
-                        <div class="p-4 bg-slate-50 rounded-xl flex justify-between items-center border border-slate-100 hover:bg-slate-100 transition-colors">
-                            <span class="font-bold text-slate-700">${vehicle.brand || 'مركبة'} ${vehicle.model || ''}</span>
-                            <span class="bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full text-xs font-bold">₺${vehicle.daily_rate || '0'} / يوم</span>
+                if (vehicles.length > 0) {
+                    listContainer.innerHTML = vehicles.map(v => `
+                        <div class="p-4 bg-slate-50 rounded-xl flex justify-between items-center border border-slate-100">
+                            <span class="font-bold text-slate-700">${v.make} ${v.model}</span>
+                            <span class="text-indigo-600 font-bold">$${v.daily_price}</span>
                         </div>
                     `).join('');
                 } else {
-                    listContainer.innerHTML = '<p class="text-slate-400 italic">لا توجد مركبات مسجلة حالياً.</p>';
+                    listContainer.innerHTML = '<p>لا توجد مركبات حالياً.</p>';
                 }
 
-                // 4. تحديث الوقت
                 document.getElementById('last-update').innerText = new Date().toLocaleTimeString('ar-SA');
 
             } catch (error) {
-                console.error("خطأ الربط:", error);
+                console.error("خطأ:", error);
                 document.getElementById('connection-status').innerHTML = `
                     <span class="text-xs bg-red-100 text-red-700 px-2 py-1 rounded font-bold">فشل الاتصال</span>
                 `;
             }
         }
 
-        // تشغيل التحديث فوراً
         updateDashboard();
     </script>
 </body>
